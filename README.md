@@ -99,7 +99,7 @@ class ExampleSubGroupCommand: BaseDiscordCommand() {
                     val mentionedUser: IMentionable = event.ctx.option("user")?.asMentionable ?: return
                     val role: Role = event.ctx.option("role")?.asRole ?: return
 
-                    event.ctx.slashEvent.guild?.addRoleToMember(UserSnowflake.fromId(mentionedUser.id), role)
+                    event.ctx.slashEvent.guild?.addRoleToMember(UserSnowflake.fromId(mentionedUser.id), role)?.queue()
                     event.ctx.reply("Hello world ${mentionedUser.asMention} now have role ${role.name}")
                 }
             }
@@ -110,7 +110,7 @@ class ExampleSubGroupCommand: BaseDiscordCommand() {
                     val mentionedUser: IMentionable = event.ctx.option("user")?.asMentionable ?: return
                     val role: Role = event.ctx.option("role")?.asRole ?: return
 
-                    event.ctx.slashEvent.guild?.removeRoleFromMember(UserSnowflake.fromId(mentionedUser.id), role)
+                    event.ctx.slashEvent.guild?.removeRoleFromMember(UserSnowflake.fromId(mentionedUser.id), role)?.queue()
                     event.ctx.reply("Hello world ${mentionedUser.asMention} now don't role ${role.name}")
                 }
             }
