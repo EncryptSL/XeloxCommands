@@ -1,6 +1,35 @@
 # XeloxCommands
 Simple JDA Discord Command Framework.
 
+## Instalation
+
+#### Gradle
+```GRADLE
+repositories {
+    maven("https://jitpack.io")
+}
+
+dependencies {
+    implementation("com.github.EncryptSL:XeloxCommands:1.0.0")
+}
+```
+
+#### Maven
+```XML
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+
+<dependency>
+    <groupId>com.github.EncryptSL</groupId>
+    <artifactId>XeloxCommands</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
 Example Registering of Commands
 ```KOTLIN
         val commandBuilder = DiscordCommandBuilder()
