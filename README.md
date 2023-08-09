@@ -1,3 +1,6 @@
+[![Release](https://jitpack.io/v/EncryptSL/XeloxCommands.svg?style=flat-square)](https://jitpack.io/#EncryptSL/XeloxCommands)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
 # XeloxCommands
 Simple JDA Discord Command Framework.
 
@@ -26,7 +29,7 @@ dependencies {
 <dependency>
     <groupId>com.github.EncryptSL</groupId>
     <artifactId>XeloxCommands</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
@@ -61,7 +64,7 @@ class ExampleRequiredTextChannel : BaseDiscordCommand() {
     override fun execute(event: CommandContext) {
         if (event.ctx.command()) {
             event.ctx.deferReply()
-            if (!event.ctx.allowedTextChannel("YOUR_TEXT_CHANNEL_ID")) {
+            if (!event.ctx.inAllowedTextChannel("YOUR_TEXT_CHANNEL_ID")) {
                 event.ctx.reply("This command can't be executed in this channel !")
                 return
             }
@@ -76,7 +79,7 @@ class ExampleRequiredVoiceChannel : BaseDiscordCommand() {
     override fun execute(event: CommandContext) {
         if (event.ctx.command()) {
             event.ctx.deferReply()
-            if (!event.ctx.allowedVoiceChannel("YOUR_TEXT_CHANNEL_ID") && !event.ctx.inAudioChannel()) {
+            if (!event.ctx.isMemberInAudioChannel("YOUR_TEXT_CHANNEL_ID") && !event.ctx.inAudioChannel()) {
                 event.ctx.reply("You are not in same channel where is bot")
                 return
             }
@@ -128,7 +131,7 @@ class ExampleSubGroupCommand: BaseDiscordCommand() {
                     val mentionedUser: IMentionable = event.ctx.option("user")?.asMentionable ?: return
                     val role: Role = event.ctx.option("role")?.asRole ?: return
 
-                    event.ctx.slashEvent.guild?.addRoleToMember(UserSnowflake.fromId(mentionedUser.id), role)?.queue()
+                    event.ctx.addRoleToMember(UserSnowflake.fromId(mentionedUser.id), role)?.queue()
                     event.ctx.reply("Hello world ${mentionedUser.asMention} now have role ${role.name}")
                 }
             }
@@ -139,7 +142,7 @@ class ExampleSubGroupCommand: BaseDiscordCommand() {
                     val mentionedUser: IMentionable = event.ctx.option("user")?.asMentionable ?: return
                     val role: Role = event.ctx.option("role")?.asRole ?: return
 
-                    event.ctx.slashEvent.guild?.removeRoleFromMember(UserSnowflake.fromId(mentionedUser.id), role)?.queue()
+                    event.ctx.removeRoleFromMember(UserSnowflake.fromId(mentionedUser.id), role)?.queue()
                     event.ctx.reply("Hello world ${mentionedUser.asMention} now don't role ${role.name}")
                 }
             }
