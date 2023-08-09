@@ -1,13 +1,11 @@
 package com.github.encryptsl.discord.framework.api
 
-import net.dv8tion.jda.api.entities.Member
-import net.dv8tion.jda.api.entities.MessageEmbed
-import net.dv8tion.jda.api.entities.Role
-import net.dv8tion.jda.api.entities.User
+import net.dv8tion.jda.api.entities.*
 import net.dv8tion.jda.api.entities.channel.Channel
 import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.interactions.commands.OptionMapping
+import java.util.concurrent.TimeUnit
 
 class CommandContextImpl(private val interaction: SlashCommandInteractionEvent, private val command: String) {
 
@@ -22,17 +20,33 @@ class CommandContextImpl(private val interaction: SlashCommandInteractionEvent, 
         return interaction.subcommandName == name
     }
 
-    fun allowedTextChannel(requiredChannel: String): Boolean {
+    fun inAllowedTextChannel(requiredChannel: String): Boolean {
         return channel().id == requiredChannel
     }
 
-    fun allowedVoiceChannel(requiredChannel: String): Boolean {
+    fun isMemberInAudioChannel(requiredChannel: String): Boolean {
         return member()?.voiceState?.id == requiredChannel
     }
 
     fun inAudioChannel(): Boolean
     {
         return member()?.voiceState?.inAudioChannel() == true
+    }
+
+    fun ban(member: Member, reason: String, timeOut: Int, timeUnit: TimeUnit) {
+        member.ban(timeOut, timeUnit).reason(reason).queue()
+    }
+
+    fun kick(member: Member, reason: String) {
+        member.kick().reason(reason).queue()
+    }
+
+    fun addRoleToMember(member: Member, role: Role) {
+        interaction.guild?.addRoleToMember(UserSnowflake.fromId(member.id), role)?.queue()
+    }
+
+    fun removeRoleFromMember(member: Member, role: Role) {
+        interaction.guild?.removeRoleFromMember(UserSnowflake.fromId(member.id), role)?.queue()
     }
 
     fun hasRole(roleId: String): Boolean {
