@@ -97,11 +97,27 @@ class CommandContextImpl(private val interaction: SlashCommandInteractionEvent, 
         }
     }
 
+    fun replyPrivate(target: User, message: String, privateMessage: String) {
+        interaction.hook.sendMessage(message).queue { _ ->
+            target.openPrivateChannel().flatMap { channel: PrivateChannel ->
+                channel.sendMessage(privateMessage)
+            }.queue()
+        }
+    }
+
     fun replyPrivate(string: String, embed: MessageEmbed) {
         interaction.hook.sendMessage(string).queue { r ->
             r.interaction?.user?.openPrivateChannel()?.flatMap { channel: PrivateChannel ->
                 channel.sendMessageEmbeds(embed)
             }?.queue()
+        }
+    }
+
+    fun replyPrivate(target: User, string: String, embed: MessageEmbed) {
+        interaction.hook.sendMessage(string).queue { _ ->
+            target.openPrivateChannel().flatMap { channel: PrivateChannel ->
+                channel.sendMessageEmbeds(embed)
+            }.queue()
         }
     }
 }
