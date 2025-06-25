@@ -86,18 +86,18 @@ class CommandContextImpl(private val interaction: SlashCommandInteractionEvent, 
         interaction.deferReply().queue()
     }
 
-    fun reply(string: String, deferReply: Boolean = false) {
+    fun reply(string: String, deferReply: Boolean = false, setEphemeral: Boolean = false) {
         if (deferReply) {
-            interaction.hook.setEphemeral(true)
+            interaction.hook.setEphemeral(setEphemeral)
             interaction.hook.sendMessage(string).queue()
         } else {
             interaction.reply(string)
         }
     }
 
-    fun reply(embed: MessageEmbed, deferReply: Boolean = false) {
+    fun reply(embed: MessageEmbed, deferReply: Boolean = false, setEphemeral: Boolean = false) {
         if (deferReply) {
-            interaction.hook.setEphemeral(true)
+            interaction.hook.setEphemeral(setEphemeral)
             interaction.hook.sendMessageEmbeds(embed).queue()
         } else {
             interaction.replyEmbeds(embed)
