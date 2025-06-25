@@ -1,18 +1,18 @@
 plugins {
-    kotlin("jvm") version "1.9.0" apply true
+    kotlin("jvm") version "2.2.0"
     `maven-publish`
 }
 
 group = "com.github.encryptsl.discord"
-version = "1.0.2"
+version = "1.0.3"
 
 repositories {
-    mavenLocal()
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
-    compileOnly("net.dv8tion:JDA:5.0.0-beta.13")
+    compileOnly("net.dv8tion:JDA:5.6.1")
     testImplementation(kotlin("test"))
 }
 
@@ -21,7 +21,7 @@ tasks.test {
 }
 
 kotlin {
-    jvmToolchain(8)
+    jvmToolchain(21)
 }
 
 publishing {

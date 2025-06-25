@@ -15,10 +15,11 @@ class DiscordCommandExecutor(private val commands: List<BaseDiscordCommand>) : L
         commands.forEach { a ->
             val method = a::class.java.getMethod("execute", CommandContext::class.java)
             val commandAnnotation = method.getAnnotation(Command::class.java)
-            if (commandAnnotation.command.isNotEmpty() || commandAnnotation != null) {
-                a.execute(CommandContext(CommandContextImpl(event, commandAnnotation.command)))
+            val command = commandAnnotation?.command
+            if (!command.isNullOrEmpty()) {
+                a.execute(CommandContext(CommandContextImpl(event, command)))
             } else {
-                throw MissingCommandException("Missing command in class ${method.javaClass}")
+                throw MissingCommandException("Missing or empty command in class ${method.declaringClass.name}")
             }
         }
     }
