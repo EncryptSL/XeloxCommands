@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.entities.channel.Channel
 import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.interactions.commands.OptionMapping
+import net.dv8tion.jda.api.requests.restaction.interactions.ReplyCallbackAction
 import java.util.concurrent.TimeUnit
 
 class CommandContextImpl(private val interaction: SlashCommandInteractionEvent, private val command: String) {
@@ -86,6 +87,10 @@ class CommandContextImpl(private val interaction: SlashCommandInteractionEvent, 
         interaction.deferReply().queue()
     }
 
+    fun deferReplyQueue(): ReplyCallbackAction {
+        return interaction.deferReply()
+    }
+
     fun reply(content: String, ephemeral: Boolean = false) {
         if (!interaction.isAcknowledged) {
             interaction.reply(content).setEphemeral(ephemeral).queue()
@@ -103,34 +108,66 @@ class CommandContextImpl(private val interaction: SlashCommandInteractionEvent, 
     }
 
     fun replyPrivate(message: String, privateMessage: String) {
-        interaction.hook.sendMessage(message).queue { r ->
-            r.author.openPrivateChannel().flatMap { channel: PrivateChannel ->
-                channel.sendMessage(privateMessage)
-            }.queue()
+        if (!interaction.isAcknowledged) {
+            interaction.reply(message).queue { r ->
+                r.interaction.user.openPrivateChannel().flatMap { channel: PrivateChannel ->
+                    channel.sendMessage(privateMessage)
+                }.queue()
+            }
+        } else {
+            interaction.hook.sendMessage(message).queue { r ->
+                r.author.openPrivateChannel().flatMap { channel: PrivateChannel ->
+                    channel.sendMessage(privateMessage)
+                }.queue()
+            }
         }
     }
 
     fun replyPrivate(target: User, message: String, privateMessage: String) {
-        interaction.hook.sendMessage(message).queue { _ ->
-            target.openPrivateChannel().flatMap { channel: PrivateChannel ->
-                channel.sendMessage(privateMessage)
-            }.queue()
+        if (!interaction.isAcknowledged) {
+            interaction.reply(message).queue { r ->
+                target.openPrivateChannel().flatMap { channel: PrivateChannel ->
+                    channel.sendMessage(privateMessage)
+                }.queue()
+            }
+        } else {
+            interaction.hook.sendMessage(message).queue { _ ->
+                target.openPrivateChannel().flatMap { channel: PrivateChannel ->
+                    channel.sendMessage(privateMessage)
+                }.queue()
+            }
         }
     }
 
     fun replyPrivate(string: String, embed: MessageEmbed) {
-        interaction.hook.sendMessage(string).queue { r ->
-            r.author.openPrivateChannel().flatMap { channel: PrivateChannel ->
-                channel.sendMessageEmbeds(embed)
-            }.queue()
+        if (!interaction.isAcknowledged) {
+            interaction.reply(string).queue { r ->
+                r.interaction.user.openPrivateChannel().flatMap { channel: PrivateChannel ->
+                    channel.sendMessageEmbeds(embed)
+                }.queue()
+            }
+        } else {
+            interaction.hook.sendMessage(string).queue { r ->
+                r.author.openPrivateChannel().flatMap { channel: PrivateChannel ->
+                    channel.sendMessageEmbeds(embed)
+                }.queue()
+            }
         }
     }
 
     fun replyPrivate(target: User, string: String, embed: MessageEmbed) {
-        interaction.hook.sendMessage(string).queue { _ ->
-            target.openPrivateChannel().flatMap { channel: PrivateChannel ->
-                channel.sendMessageEmbeds(embed)
-            }.queue()
+        if (!interaction.isAcknowledged) {
+            interaction.reply(string).queue { _ ->
+                target.openPrivateChannel().flatMap { channel: PrivateChannel ->
+                    channel.sendMessageEmbeds(embed)
+                }.queue()
+            }
+        } else {
+            interaction.hook.sendMessage(string).queue { _ ->
+                target.openPrivateChannel().flatMap { channel: PrivateChannel ->
+                    channel.sendMessageEmbeds(embed)
+                }.queue()
+            }
         }
     }
 }
